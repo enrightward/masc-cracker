@@ -1,0 +1,59 @@
+#!/usr/bin/env python3
+
+import argparse
+#from distutils import util
+from utils import clean_text, standard_alphabet, alphabet_from_text
+from masc_decrypter import MASCBigramDecrypter
+
+DEFAULT_IN = './cipher_text.txt'
+DEFAULT_OUT = './deciphered_text.txt'
+DEFAULT_KEY = './decryption_key.csv'
+DEFAULT_TRAINTEXT = './train_text.txt'
+DEFAULT_ALPHABET = './alphabet.txt'
+
+HELP_STR = """Decrypt a MASC encrypted file --input and save decrypted text to
+           --output and decryption key to --key, given a training file --training,
+           plaintext alphabet --plainalpha, and ciphertext alphabet --cipheralpha."""
+
+
+if __name__ == '__main__':
+    #bool_type = lambda x: bool(util.strtobool(x))
+    parser = argparse.ArgumentParser(description=HELP_STR)
+    verbose_help = 'if True, all three of plain-, cipher- and deciphered text are saved to disk'
+    parser.add_argument('--input', help="file in which ciphertext is stored", type=str, default=DEFAULT_IN)
+    parser.add_argument('--output', help="file to which decrypted text will be saved", type=str, default=DEFAULT_OUT)
+    parser.add_argument('--key', help="csv file to which encryption and decryption keys will be saved", type=str, default=DEFAULT_KEY)
+    parser.add_argument('--training', help='file containing plain training text', type=str, default=DEFAULT_TRAINTEXT)
+    parser.add_argument('--plainalpha', help='file containing plaintext alphabet', type=str, default=DEFAULT_TRAINTEXT)
+    parser.add_argument('--cipheralpha', help='file containing ciphertext alphabet', type=str, default=DEFAULT_TRAINTEXT)
+    parser.add_argument('--iterations', help='number of training cycles', type=int, default=1000)
+    parser.add_argument('--mode', help='method of decryption', type=str, choices=['monogram', 'bigram', 'both'], default='both')
+    args = parser.parse_args()
+
+    with open(args.input, 'r') as f:
+        ciphertext = ' '.join(f.read().split())
+        ciphertext = clean_text(ciphertext)
+
+    with open(args.training, 'r') as f:
+        traintext = ' '.join(f.read().split())
+        traintext = clean_text(traintext)
+
+    with open(args.plainalpha, 'r') as f:
+        data = clean_text(f.read())
+        plain_alphabet = alphabet_from_text(data)
+
+    with open(args.cipheralpha, 'r') as f:
+        data = clean_text(f.read())
+        cipher_alphabet = alphabet_from_text(data)
+
+    verbose = True
+    mascd = MASCBigramDecrypter(ciphertext, traintext, plain_alphabet, cipher_alphabet)
+    mascd.train(iterations=args.iterations, verbose=verbose, mode=args.mode)
+
+    with open(args.key, 'w') as f:
+        encrypt_data = '\n'.join(['%s,%s' % (k, v) for k, v in mascd.encryption_key.items()])
+        decrypt_data = '\n'.join(['%s,%s' % (k, v) for k, v in mascd.decryption_key.items()])
+        f.write('ENCRYPTION KEY:\n\n%s\n\nDECRYPTION KEY:\n\n%s' % (encrypt_data, decrypt_data))
+
+    with open(args.output, 'w') as f:
+        f.write('CIPHER TEXT:\n\n%s\n\nDECIPHERED TEXT:\n\n%s' % (mascd.ciphertext, mascd.deciphered_text))

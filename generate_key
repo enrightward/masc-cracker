@@ -1,0 +1,46 @@
+#!/usr/bin/env python3
+
+import argparse
+from utils import standard_alphabet, simple_random_masc_key, random_derangement
+from utils import random_masc_key, alphabet_from_text, clean_text
+
+
+DEFAULT_OUT = './encryption_key.csv'
+HELP_STR = """Script to generate a MASC key, and save this to disk."""
+
+
+if __name__ == '__main__':
+    choices = ['random', 'derange', 'simple']
+    parser = argparse.ArgumentParser(description=HELP_STR)
+    parser.add_argument('--method', help='method of key generation', type=str, choices=choices, default='random')
+    parser.add_argument('--numtrans', help="number of transpositions, if --method == 'simple'", type=int)
+    parser.add_argument('--alphabet', help="text file from from which alphabet is derived", type=str)
+    parser.add_argument('--output', help="filepath to which key is saved in csv format", type=str, default=DEFAULT_OUT)
+    args = parser.parse_args()
+
+    if args.method == 'simple' and args.numtrans is None:
+        parser.error("If --method == 'simple' then --numtrans must have int argument.")
+
+    if args.alphabet is None:
+        alphabet = standard_alphabet()
+
+    else:
+
+        with open(args.alphabet, 'r') as f:
+            #alphabet = [a for a in [a.strip() for a in f.readlines()] if a != '']
+            data = clean_text(f.read())
+            alphabet = alphabet_from_text(data)
+
+    if args.method == 'random':
+        key = random_masc_key(alphabet)
+
+    elif args.method == 'derange':
+        derangement = random_derangement(len(alphabet))
+        key = dict(zip(alphabet, [alphabet[idx] for idx in derangement]))
+
+    else:
+        key, _ = simple_random_masc_key(alphabet, args.numtrans)
+
+    with open(args.output, 'w') as f:
+        data = '\n'.join(['%s,%s' % (k, v) for k, v in key.items()])
+        f.write(data)
