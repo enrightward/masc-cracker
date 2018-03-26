@@ -3,8 +3,9 @@
 PLAINTEXT='plain_text.txt'
 TRAINING='train_text.txt'
 ITER=10000
+PAUSE=0.002
 MODE='bigram'
 
 ./generate_key --method random --alphabet $PLAINTEXT
 ./masc_encrypter --input $PLAINTEXT
-./masc_decrypter --training $TRAINING --iterations $ITER --mode $MODE
+./masc_decrypter --training $TRAINING --iterations $ITER --mode $MODE --pause $PAUSE

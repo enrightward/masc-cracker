@@ -11,7 +11,9 @@ DEFAULT_OUT = './cipher_text.txt'
 DEFAULT_KEY = './encryption_key.csv'
 
 HELP_STR = """Script to MASC encrypt a plaintext file --plaintext, given a
-           csv key file --key. Optionally, the ciphertext can be anagrammed."""
+           csv key file --key. Optionally, the ciphertext can be anagrammed.
+           Plaintext characters not in the domain of key are replaced with a
+           space character."""
 
 
 if __name__ == '__main__':

@@ -25,6 +25,7 @@ if __name__ == '__main__':
     parser.add_argument('--plainalpha', help='file containing plaintext alphabet', type=str, default=DEFAULT_TRAINTEXT)
     parser.add_argument('--cipheralpha', help='file containing ciphertext alphabet', type=str, default=DEFAULT_TRAINTEXT)
     parser.add_argument('--iterations', help='number of training cycles', type=int, default=1000)
+    parser.add_argument('--pause', help='update delay (seconds) for visualisation', type=float, default=0.02)
     parser.add_argument('--mode', help='method of decryption', type=str, choices=['monogram', 'bigram', 'both'], default='both')
     args = parser.parse_args()
 
@@ -46,7 +47,7 @@ if __name__ == '__main__':
 
     verbose = True
     mascd = MASCBigramDecrypter(ciphertext, traintext, plain_alphabet, cipher_alphabet)
-    mascd.train(iterations=args.iterations, verbose=verbose, mode=args.mode)
+    mascd.train(iterations=args.iterations, verbose=verbose, mode=args.mode, pause=args.pause)
 
     with open(args.key, 'w') as f:
         encrypt_data = '\n'.join(['%s,%s' % (k, v) for k, v in mascd.encryption_key.items()])

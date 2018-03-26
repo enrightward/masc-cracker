@@ -1,17 +1,18 @@
 import random as rd, numpy as np, string, curses, time, itertools
+
 from functools import reduce
+from collections import defaultdict
 from utils import apply_masc, identity_key, monogram_freqs
-from utils import alphabet_from_text, WHITESPACE_LIST
-from utils import text_bigram_counts, text_bigram_freqs, bigram_likelihood
-from utils import conjugate_transposition, array_l1_normalise, start_screen, exit_screen
+from utils import alphabet_from_text, WHITESPACE_LIST, BLANK
 from utils import random_homophonic_masc_encryption_key, _sumlist
 from colour_print import hmap_display_bigrams, rgb_heatmap, print_block
+from utils import text_bigram_counts, text_bigram_freqs, bigram_likelihood
+from utils import conjugate_transposition, array_l1_normalise, start_screen, exit_screen
 
 CHAR_LIMIT = 100
 NUM_COLOURS = 50
 HMAP = rgb_heatmap(NUM_COLOURS)
 
-#_sumlist = lambda llst: reduce(lambda x, y: x + y, llst) if llst != [] else []
 
 class MASCDecrypter(object):
 
@@ -66,6 +67,10 @@ class MASCBigramDecrypter(MASCDecrypter):
         super().__init__(ciphertext, traintext, plaintext_alphabet, ciphertext_alphabet)
         idxs = range(len(self.ciphertext_alphabet))
         self.alpha_to_idx = dict(zip(self.ciphertext_alphabet, idxs))
+
+        #self.alpha_to_idx = defaultdict(zip(self.ciphertext_alphabet, idxs), lambda: BLANK)
+        #self.alpha_to_idx = defaultdict(lambda: BLANK, zip(self.ciphertext_alphabet, idxs))
+
         self.idx_to_alpha = {v: k for k, v in self.alpha_to_idx.items()}
         self.training_bigram_freqs = text_bigram_freqs(self.traintext, self.alpha_to_idx)
 
@@ -88,7 +93,7 @@ class MASCBigramDecrypter(MASCDecrypter):
         dct[c], dct[d] = dct[d], dct[c]
         self.decryption_key = {v: k for k, v in self.encryption_key.items()}
 
-    def print_progress(self, transposition, i, stdscr):
+    def print_progress(self, transposition, i, stdscr, pause):
         a, b = transposition
         c, d = self.idx_to_alpha[a], self.idx_to_alpha[b]
         self.deciphered_text = apply_masc(self.ciphertext, self.decryption_key)
@@ -102,9 +107,9 @@ class MASCBigramDecrypter(MASCDecrypter):
         blanks = [''] * len(lines)
         lines = list(itertools.chain(*zip(lines, blanks))) + hmap_bigrams
         print_block(lines, stdscr)
-        time.sleep(0.02)
+        time.sleep(pause)
 
-    def train(self, iterations, verbose, mode):
+    def train(self, iterations, verbose, mode, pause):
 
         if mode in ['monogram', 'both']:
             super().train()
@@ -122,29 +127,13 @@ class MASCBigramDecrypter(MASCDecrypter):
 
                     if verbose:
                         stdscr = start_screen()
-                        self.print_progress(transposition, i, stdscr)
+                        self.print_progress(transposition, i, stdscr, pause)
 
         if verbose:
             exit_screen(stdscr)
 
         self.deciphered_text = apply_masc(self.ciphertext, self.decryption_key)
 
-
-"""
-def random_homophonic_masc_encryption_key(plaintext_alphabet, ciphertext_alphabet):
-    #The ciphertext alphabet cannot be smaller than the plaintext alphabet.
-    plain_len, cipher_len = len(plaintext_alphabet), len(ciphertext_alphabet)
-    assert(cipher_len >= plain_len)
-    injective_image = rd.sample(ciphertext_alphabet, plain_len)
-    injective_part = [(a, injective_image[i]) for i, a in enumerate(plaintext_alphabet)]
-    non_image = [c for c in ciphertext_alphabet if c not in injective_image]
-    non_injective_part = [(rd.choice(plaintext_alphabet), c) for c in non_image]
-    encryption_key = injective_part + non_injective_part
-    encryption_key.sort(key=lambda x: x[0])
-    decryption_key = dict([(b, a) for a, b in encryption_key])
-    encryption_key = dict([(x, [b for a, b in encryption_key if a == x]) for x in plaintext_alphabet])
-    return (encryption_key, decryption_key)
-"""
 
 class HomophonicMASCDecrypter(MASCDecrypter):
 
@@ -230,10 +219,8 @@ class HomophonicMASCDecrypter(MASCDecrypter):
         line1 = '%i: deciphered_text_likelihood = %f' % (i, self.deciphered_text_likelihood)
         line2 = 'deciphered text:'
         line3 = self.deciphered_text[:CHAR_LIMIT]
-        #"""
         freq_diff = np.abs(self.training_bigram_freqs - self.deciphered_text_bigram_freqs)
         hmap_bigrams = hmap_display_bigrams(freq_diff, HMAP, self.plain_idx_to_alpha)
-        #"""
         lines = [line1, line2, line3]
         blanks = [''] * len(lines)
         lines = list(itertools.chain(*zip(lines, blanks))) + hmap_bigrams

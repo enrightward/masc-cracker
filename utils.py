@@ -6,7 +6,7 @@ _sumlist = lambda llist: reduce(lambda x, y: x + y, llist) if llist != [] else [
 tokenizer = re.compile(r'(?u)\b[^(\W|\d|_)]{1,}\w*\b')
 WHITESPACE_LIST = list(string.whitespace)
 EPSILON = 10**-5
-
+BLANK = ' '
 
 def start_screen():
     stdscr = curses.initscr()
@@ -53,7 +53,7 @@ def cipher_char(char, key):
         result = key[char]
 
     else:
-        result = char
+        result = BLANK
 
     return result
 
@@ -191,9 +191,14 @@ def word_bigram_counts(bigram_counts, alpha_to_idx, word):
     char_pairs = zip(chars, chars[1:])
 
     for c1, c2 in char_pairs:
-        idx_1 = alpha_to_idx[c1]
-        idx_2 = alpha_to_idx[c2]
-        bigram_counts[idx_1][idx_2] += 1.0
+
+        try:
+            idx_1 = alpha_to_idx[c1]
+            idx_2 = alpha_to_idx[c2]
+            bigram_counts[idx_1][idx_2] += 1.0
+
+        except KeyError:
+            pass
 
 
 def array_l1_normalise(array):
