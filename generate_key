@@ -27,7 +27,6 @@ if __name__ == '__main__':
     else:
 
         with open(args.alphabet, 'r') as f:
-            #alphabet = [a for a in [a.strip() for a in f.readlines()] if a != '']
             data = clean_text(f.read())
             alphabet = alphabet_from_text(data)
 

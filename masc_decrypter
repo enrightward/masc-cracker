@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import argparse
-#from distutils import util
 from utils import clean_text, standard_alphabet, alphabet_from_text
 from masc_decrypter import MASCBigramDecrypter
 
@@ -17,7 +16,6 @@ HELP_STR = """Decrypt a MASC encrypted file --input and save decrypted text to
 
 
 if __name__ == '__main__':
-    #bool_type = lambda x: bool(util.strtobool(x))
     parser = argparse.ArgumentParser(description=HELP_STR)
     verbose_help = 'if True, all three of plain-, cipher- and deciphered text are saved to disk'
     parser.add_argument('--input', help="file in which ciphertext is stored", type=str, default=DEFAULT_IN)

@@ -1,9 +1,8 @@
 #!/bin/bash
 
 PLAINTEXT='plain_text.txt'
-TRAINING='plain_text.txt'
+TRAINING='train_text.txt'
 ITER=10000
-#MODE='monogram'
 MODE='bigram'
 
 ./generate_key --method random --alphabet $PLAINTEXT

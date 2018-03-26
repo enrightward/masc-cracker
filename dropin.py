@@ -13,9 +13,6 @@ def dropin(sourcefolder, prefix):
     sources = glob.glob(os.path.join(sourcefolder, matchstring))
     targets = ['./train_text.txt', 'plain_text.txt']
 
-    print('sources:\n')
-    print(sources)
-
     for f, g in zip(sources, targets):
         copy(f, g)
 

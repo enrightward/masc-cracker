@@ -6,9 +6,10 @@ from distutils import util
 from utils import clean_text
 from masc_encrypter import MASCEncrypter
 
-DEFAULT_PLAINTEXT = './plain_text.txt'
+DEFAULT_IN = './plain_text.txt'
 DEFAULT_OUT = './cipher_text.txt'
 DEFAULT_KEY = './encryption_key.csv'
+
 HELP_STR = """Script to MASC encrypt a plaintext file --plaintext, given a
            csv key file --key. Optionally, the ciphertext can be anagrammed."""
 
@@ -18,7 +19,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=HELP_STR)
     verbose_help = 'if True, all three of plain-, cipher- and deciphered text are saved to disk'
     parser.add_argument('--key', help="csv key file", type=str, default=DEFAULT_KEY)
-    parser.add_argument('--input', help="file where plaintext is stored", type=str, default=DEFAULT_PLAINTEXT)
+    parser.add_argument('--input', help="file in which plaintext is stored", type=str, default=DEFAULT_IN)
     parser.add_argument('--output', help="file to which ciphertext will be saved", type=str, default=DEFAULT_OUT)
     parser.add_argument('--anagram', help='if True, ciphertext will be anagrammed', type=bool_type, default=False)
     parser.add_argument('--verbose', help=verbose_help, type=bool_type, default=False)
@@ -39,7 +40,7 @@ if __name__ == '__main__':
     with open(args.output, 'w') as f:
 
         if args.verbose:
-            data = 'PLAINTEXT:\n\n%s\n\nCIPHERTEXT:\n\n%s\n\nDECIPHERTEXT:\n\n%s' % (plaintext, ciphertext, deciphertext)
+            data = 'PLAINTEXT:\n\n%s\n\nCIPHERTEXT:\n\n%s\n\nDECIPHERED TEXT:\n\n%s' % (plaintext, ciphertext, deciphertext)
 
         else:
             data = '%s' % ciphertext
