@@ -38,7 +38,9 @@ to copy-paste the two french language files contained in `./docs` into the PWD a
 ```
 ./demo.sh
 ```
-This script firstly infers the alphabet of `plain_text.txt`, then randomly generate a key on this alphabet, then encrypts `plain_text.txt` and saves the resulting ciphertext to disk as `cipher_text.txt`, also saving the encryption key to disk as `encryption_key.csv`. Finally, it attempts to break the cipher without looking at the plaintext or the encryption key, saving to disk its best-guess decipherment as `deciphered_text.txt`, and best-guess decryption key as `decryption_key.csv`. Running:
+This script firstly infers the alphabet of `plain_text.txt`, then randomly generate a key on this alphabet, then encrypts `plain_text.txt` and saves the resulting ciphertext to disk as `cipher_text.txt`, also saving the encryption key to disk as `encryption_key.csv`. Finally, it attempts to break the cipher without looking at the plaintext or the encryption key, saving to disk its best-guess decipherment as `deciphered_text.txt`, and best-guess decryption key as `decryption_key.csv`. 
+
+3. Running:
 ```
 ./clear.sh
 ```
