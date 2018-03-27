@@ -28,40 +28,30 @@ will copy-paste the two french language files contained in `./docs` into the PWD
 
 In the `./masc-cracker` directory:
 
-**1.** Type e.g. 
-
+1. Type e.g. 
 ```
 ./dropin.py french
 ```
-
 to copy-paste the two french language files contained in `./docs` into the PWD as `plain_text.txt` and `train_text.txt`. 
 
-**2.** Type 
-
+2. Type 
 ```
 ./demo.sh
 ```
-
 This script firstly infers the alphabet of `plain_text.txt`, then randomly generate a key on this alphabet, then encrypts `plain_text.txt` and saves the resulting ciphertext to disk as `cipher_text.txt`, also saving the encryption key to disk as `encryption_key.csv`. Finally, it attempts to break the cipher without looking at the plaintext or the encryption key, saving to disk its best-guess decipherment as `deciphered_text.txt`, and best-guess decryption key as `decryption_key.csv`. Running:
-
 ```
 ./clear.sh
 ```
-
 deletes the encryption and decryption keys from disk, as well as the ciphertext and attempted deciphered text. It does not delete the plain and train text files.
 
 ## 3. Usage in more detail
 
 You can interact with the code using the three scripts `generate_key`, `masc_encrypter` and `masc_decrypter`. Each is documented. There are several possibilities:
 
-1. (Quickest) The script `demo.sh` takes an argument `plain_text.txt`, encrypts it as `cipher_text.txt` with a randomly generated key, then uses the character frequency statistics contained in the text of a second argument, `train_text.txt`, to try and decrypt `cipher_text.txt`. The decryption algorithm does not cheat: It has access neither to the original `plain_text.txt`, nor to the encryption key.
-
-The `demo.sh` script works out of the box, provided the PWD contains two plaintext files: `plain_text.txt` and `train_text.txt`, both written in the same language. The `./docs` subdirectory contains examples of such files, in `(plain, train)` pairs, in several languages. As explained above, you can type e.g. 
-
+1. (Quickest) The script `demo.sh` takes an argument `plain_text.txt`, encrypts it as `cipher_text.txt` with a randomly generated key, then uses the character frequency statistics contained in the text of a second argument, `train_text.txt`, to try and decrypt `cipher_text.txt`. The decryption algorithm does not cheat: It has access neither to the original `plain_text.txt`, nor to the encryption key. The `demo.sh` script works out of the box, provided the PWD contains two plaintext files: `plain_text.txt` and `train_text.txt`, both written in the same language. The `./docs` subdirectory contains examples of such files, in `(plain, train)` pairs, in several languages. As explained above, you can type e.g. 
 ```
 ./dropin.py french
 ```
-
 to copy-paste the two french language files contained in `./docs` into the PWD, naming them `plain_text.txt` and `train_text.txt`.
 
 2. If you already have MASC-encrypted ciphertext, you can attempt to crack it immediately using the `masc_decrypter` script.
@@ -88,7 +78,11 @@ xxx
 
 ## 5. Inferring the alphabet, handling non-alphabetic characters 
 
-xxx
+The `generate_key` script creates an encryption key by choosing a random permutation of the alphabet it infers from a plaintext file argument `--alphabet`. This alphabet is defined to be the set of all non blank, non punctuation characters in the file. 
+
+The `masc_encrypter` script can apply any encryption key to any plaintext file. If the script encounters a character outside the encryption key's alphabet, it is replaced with a blank space.
+
+The `masc_decrypter` script can apply xxx
 
 ## 6. Dependencies
 
