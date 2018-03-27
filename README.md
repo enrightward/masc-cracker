@@ -86,9 +86,12 @@ Here is a high level description of the decryption algorithm.
 The idea is now to make successive small, random modifications to the `current_decryption_key` (which in turn modifies the `current_deciphered_text`, which in turn modifies `C(DT)`, which in turn modifies `L(DT)`), and check if each modification increases `L(DT)`. Informally, such an increase would mean that the modified `current_deciphered_text` is more likely than its predecessor, so in this case we keep the modification to the `current_decryption_key`. Otherwise, if `L(DT)` does not increase, we discard the modification, and try a new one in its place. More precisely:
 
 4. For a fixed number of iterations specified by the user:
-..i. Swap two randomly chosen letters in the deciphered text (corresponding to a swap in `current_decryption_key`).
-..ii. Recompute `C(DT)` and `L(DT)`.
-..iii. If `L(DT)` has increased, keep the change to `current_decryption_key`. If `L(DT)` has not increased, discard the change.
+
+      (i) Swap two randomly chosen letters in the deciphered text (corresponding to a swap in `current_decryption_key`).
+
+      (ii) Recompute `C(DT)` and `L(DT)`.
+
+      (iii) If `L(DT)` has increased, keep the change to `current_decryption_key`. If `L(DT)` has not increased, discard the change.
 
 5. Return the `current_decryption_key` and `current_deciphered_text`.
 
