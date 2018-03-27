@@ -24,7 +24,6 @@ HELP_STR = """Given a prefix common to exactly two files in ./docs, copies
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=HELP_STR)
-    #parser.add_argument('--prefix', help='a prefix common to exactly two files in ./docs/', type=str, required=True)
     parser.add_argument('prefix', help='a prefix common to exactly two files in ./docs/', type=str)
     args = parser.parse_args()
     dropin(SOURCEFOLDER, args.prefix)
