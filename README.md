@@ -75,15 +75,22 @@ where the `a_i` are plaintext characters and the `c_i` ciphertext, you can apply
 
 xxx
 
+## 5. Inferring the alphabet, handling non-alphabetic characters
 
-## 5. Inferring the alphabet, handling non-alphabetic characters 
+The alphabets of plain- and cipertext of characters understood by the en- and decryption algorithms are defined by the en- and decryption keys. Here we explain how each of the scripts `generate_key`, `masc_encrypter` and `masc_decrypter` handles characters outside the alphabets, and how the alphabet is inferred from a text file by `generate_key`.
 
 The `generate_key` script creates an encryption key by choosing a random permutation of the alphabet it infers from a plaintext file argument `--alphabet`. This alphabet is defined to be the set of all non blank, non punctuation characters in the file. 
 
 The `masc_encrypter` script can apply any encryption key to any plaintext file. If the script encounters a character outside the encryption key's alphabet, it is replaced with a blank space.
 
-The `masc_decrypter` script can apply xxx
+The `masc_decrypter` script can attempt to crack any ciphertext file. It infers plain- and ciphertext alphabets from two text file arguments `--plainalpha` and `--cipheralpha`, then builds a key from these. It refines these key using character frequency statistics from a plaintext file `--training`, by hypothesis written in the same language as the underlying plaintext message. A user may believe that only certain ciphertext characters contain information, and therefore define `--cipheralpha` to be some file other than the ciphertext. In this case, frequency statistics of characters in the ciphertext not belonging to the ciphertext alphabet are ignored.
 
 ## 6. Dependencies
 
-The code is written in python 3. It uses the following non-standard libraries: `numpy`, `curses`, `colr`.
+The code is written in python 3. It uses the following non-standard libraries: 
+
+1. `numpy`:   http://www.numpy.org/
+
+2. `curses`:   https://docs.python.org/3/howto/curses.html
+
+3. `colr`:   https://pypi.python.org/pypi/Colr/0.8.1
